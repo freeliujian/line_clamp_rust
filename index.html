@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Rust line clamp </title>
+</head>
+<body>
+    <script type="module">
+        import init, { add, greet } from './pkg/hello_wasm.js';
+        
+        async function run() {
+            await init();
+            
+            // 调用Rust的add函数
+            const result = add(5, 3);
+            console.log("5 + 3 =", result);
+            
+            // 调用Rust的greet函数
+            greet("World");
+        }
+        
+        run();
+    </script>
+</body>
+</html>
