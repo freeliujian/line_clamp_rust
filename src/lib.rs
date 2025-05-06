@@ -9,7 +9,7 @@ pub struct IWordInfo {
     #[wasm_bindgen(getter_with_clone)] 
     pub text: Vec<String>,
     #[wasm_bindgen(getter_with_clone)] 
-    pub widths: Vec<usize>,
+    pub widths: Vec<f64>,
     pub font_size: usize,
     pub ellipsis: bool,
 }
@@ -61,6 +61,30 @@ impl LineClamp {
         }
     }
 
+    // pub fn calc(&mut self) -> InputResultForEllipsis{
+    //     if (self.line_clamp_props.contentHeight <= self.minWidthHeight ) 
+    //     | (self.line_clamp_props.contentWidth <= self.minWidthHeight) {
+    //        return self.ellipsisResult()
+    //     } else {
+    //         let wordInfo = self.getWidthOfContent(self.maxFontSize, Vec::new());
+    //         let canWidths = self.cal
+    //     }
+    // }
+
+    pub fn transactionToHTML(&self, value: &str) -> String {
+        let format_html = format!("<span style='display:inline-block;'>{}</span>", value.trim());
+        format_html
+    }
+
+    pub fn ellipsisResult(&self) -> InputResultForEllipsis {
+        let mut html_result = Vec::new();
+        let html: String = self.transactionToHTML(&self.ellipsis);
+        html_result.push(html);
+        InputResultForEllipsis {
+            html: html_result,
+            font_size: self.minFontSize
+        }
+    }
     
     pub fn getWidthOfContent(&self, content: String, fontSize: i32) -> i32{
         let div_element = Rc::new(RefCell::new(self.element.clone()));
@@ -76,6 +100,18 @@ impl LineClamp {
         body_tags.remove_child(&div_element_move.borrow());
         offset_width
     }    
+    
+    pub fn calc_space_width(&self, fontSize: i32) -> i32{
+        let width = self.getWidthOfContent(String::from("5 pace"), fontSize);
+        let word_width = self.getWidthOfContent(String::from("pace"), fontSize);
+        let result = width - word_width;
+        result
+    }
+
+    pub fn calc_word_width_can_in_content(result: &IWordInfo, content_width: f64) -> Vec<Vec<f64>> {
+     
+    }
+    
 
 }
 

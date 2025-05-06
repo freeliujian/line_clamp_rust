@@ -9,25 +9,15 @@
         import init, { LineClamp, LineClampProps } from './pkg/line_clamp.js';
 
         async function run() {
-            // 初始化 WASM 模块
-            await init();
-            // let propss = {
-            //     texts: ["Hello", "World"],
-            //     contentWidth: 200,
-            //     contentHeight: 200,
-            // }
-            // // 创建 LineClampProps 对象
-            // const props1 = new LineClampProps(["Hello", "World"], 200, 100);
-            // console.log(props1)
-            // 使用 new 方法创建 LineClamp 实例
-            // const lineClamp = new LineClamp(props);
-
-            // // 现在你可以使用 lineClamp 的方法
-            // console.log(lineClamp);
-            
-            // // 例如调用其他方法
-            // const ellipsisResult = lineClamp.ellipsisResult();
-            // console.log(ellipsisResult.html);
+            let propss = {
+                texts: ["Hello", "World"],
+                contentWidth: 200,
+                contentHeight: 200,
+            }
+            // 创建 LineClampProps 对象
+            const props1 = new LineClampProps(propss);
+            console.log(props1)
+        
         }
 
         run();
