@@ -2,6 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::prelude::*;
 use web_sys::Element;
 use gloo::utils::{document};
+use js_sys::Array;
 
 #[wasm_bindgen]
 #[derive(Clone)]
@@ -85,6 +86,10 @@ impl LineClamp {
             font_size: self.minFontSize
         }
     }
+
+    pub fn getWordWidths(font_size: i32, incompleteWidth: Vec<i32>) {
+        
+    }
     
     pub fn getWidthOfContent(&self, content: String, fontSize: i32) -> i32{
         let div_element = Rc::new(RefCell::new(self.element.clone()));
@@ -108,10 +113,38 @@ impl LineClamp {
         result
     }
 
-    pub fn calc_word_width_can_in_content(result: &IWordInfo, content_width: f64) -> Vec<Vec<f64>> {
-     
-    }
-    
+    pub fn calc_word_width_can_in_content(result: &IWordInfo, content_width: f64) 
+    -> Array
+     {
+     let widths = result.widths.clone();
+     let mut groups:Vec<Vec<f64>> = Vec::new();
+     let mut current_group:Vec<f64> =  Vec::new();
+     let mut current_sum:f64 = 0.0;
 
+        for &width in &widths {
+            if current_sum + width <= content_width {
+                current_group.push(width);
+                current_sum += width;
+            } else {
+                if current_group.len() > 0 {
+                    groups.push(current_group);
+                }
+                current_group = [width].to_vec();
+                current_sum = width;
+            }
+        }
+
+        if current_group.len() > 0 {
+            groups.push(current_group);
+        }
+
+        groups.iter().into_iter().map(|i| {
+            let arr = Array::new();
+            for &num in i {
+                arr.push(&JsValue::from_f64(num));
+            }
+            arr
+        }).collect()
+    }
 }
 
