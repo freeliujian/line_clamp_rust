@@ -2,7 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 use wasm_bindgen::prelude::*;
 use web_sys::Element;
 use gloo::utils::{document};
-use js_sys::Array;
+use js_sys::{Array, Math};
 
 #[wasm_bindgen]
 #[derive(Clone)]
@@ -62,33 +62,53 @@ impl LineClamp {
         }
     }
 
-    // pub fn calc(&mut self) -> InputResultForEllipsis{
-    //     if (self.line_clamp_props.contentHeight <= self.minWidthHeight ) 
-    //     | (self.line_clamp_props.contentWidth <= self.minWidthHeight) {
-    //        return self.ellipsisResult()
-    //     } else {
-    //         let wordInfo = self.getWidthOfContent(self.maxFontSize, Vec::new());
-    //         let canWidths = self.cal
-    //     }
-    // }
+    pub fn calc(&mut self) 
+    // -> InputResultForEllipsis
+    {
+        // if (self.line_clamp_props.contentHeight <= self.minWidthHeight ) 
+        // | (self.line_clamp_props.contentWidth <= self.minWidthHeight) {
+        //    return self.ellipsisResult()
+        // } else {
+        //     let wordInfo = self.getWordWidths(self.maxFontSize, Vec::new());
+        //     // let canWidths = self.calc_word_width_can_in_content(wordInfo, self.line_clamp_props.c);
+        //     // let max_line = Math::floor(self.contentHeight / self.lineHeight);
+
+        //     return self.ellipsisResult()
+        // }
+    }
 
     pub fn transactionToHTML(&self, value: &str) -> String {
         let format_html = format!("<span style='display:inline-block;'>{}</span>", value.trim());
         format_html
     }
 
-    pub fn ellipsisResult(&self) -> InputResultForEllipsis {
+    pub fn ellipsisResult(&self) -> Result<InputResultForEllipsis, String> {
         let mut html_result = Vec::new();
         let html: String = self.transactionToHTML(&self.ellipsis);
         html_result.push(html);
-        InputResultForEllipsis {
+        Ok(InputResultForEllipsis {
             html: html_result,
             font_size: self.minFontSize
-        }
+        })
     }
 
-    pub fn getWordWidths(font_size: i32, incompleteWidth: Vec<i32>) {
-        
+    pub fn getWordWidths(&self, font_size: i32, incompleteWidth: Vec<i32>) -> IWordInfo {
+        if font_size < self.minFontSize {
+            return IWordInfo {
+                text: self.line_clamp_props.texts.splice(0, incompleteWidth.len()),
+                ellipsis:true,
+                widths: incompleteWidth,
+                font_size: self.minFontSize
+            }
+        }else {
+            
+            return IWordInfo {
+                text: self.line_clamp_props.texts.splice(0, incompleteWidth.len()),
+                ellipsis:true,
+                widths: incompleteWidth,
+                font_size: self.minFontSize
+            }
+        }
     }
     
     pub fn getWidthOfContent(&self, content: String, fontSize: i32) -> i32{
